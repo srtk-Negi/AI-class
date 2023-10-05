@@ -84,3 +84,69 @@ def MovePiece(board, from_square, to_square) -> list[list[str]]:
     new_board = set_piece(set_piece(board, from_square, "."), to_square, piece_to_move)
 
     return new_board
+
+
+def is_enemy(attacking_piece, defending_piece) -> bool:
+    """Returns True if the defending piece is an enemy of the attacking piece.
+
+    Args:
+        attacking_piece (str): The piece that is attacking.
+        defending_piece (str): The piece that is being attacked.
+
+    Returns:
+        bool: True if the defending piece is an enemy of the attacking piece.
+    """
+    if attacking_piece.isupper() and defending_piece.islower():
+        return True
+    elif attacking_piece.islower() and defending_piece.isupper():
+        return True
+    else:
+        return False
+
+
+def is_diagonal(from_square, to_square) -> bool:
+    """Returns True if the move is diagonal.
+
+    Args:
+        from_square (tuple[int, int]): A tuple representing a position on the board.
+        to_square (tuple[int, int]): A tuple representing a position on the board.
+
+    Returns:
+        bool: True if the move is diagonal.
+    """
+    if abs(to_square[0] - from_square[0]) == abs(to_square[1] - from_square[1]):
+        return True
+    else:
+        return False
+
+
+def is_same_column(from_square, to_square) -> bool:
+    """Returns True if the move is in the same column.
+
+    Args:
+        from_square (tuple[int, int]): A tuple representing a position on the board.
+        to_square (tuple[int, int]): A tuple representing a position on the board.
+
+    Returns:
+        bool: True if the move is in the same column.
+    """
+    if to_square[1] == from_square[1]:
+        return True
+    else:
+        return False
+
+
+def is_same_row(from_square, to_square) -> bool:
+    """Returns True if the move is in the same row.
+
+    Args:
+        from_square (tuple[int, int]): A tuple representing a position on the board.
+        to_square (tuple[int, int]): A tuple representing a position on the board.
+
+    Returns:
+        bool: True if the move is in the same row.
+    """
+    if to_square[0] == from_square[0]:
+        return True
+    else:
+        return False
