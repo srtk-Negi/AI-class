@@ -159,3 +159,12 @@ def IsMoveLegal(board, from_square, to_square) -> bool:
                 return True
     else:
         return False
+
+
+def GetListOfLegalMoves():
+    """Return a list of legal moves.
+
+    Returns:
+        list[tuple[tuple[int, int], tuple[int, int]]]: A list of legal moves.
+    """
+    pass
