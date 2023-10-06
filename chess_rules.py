@@ -215,3 +215,20 @@ def IsInCheck(board, current_player) -> bool:
     Returns:
         bool: True if the player is in check.
     """
+    king_square = None
+    for i in range(8):
+        for j in range(8):
+            if get_piece(board, (i, j)) == "k" and current_player == "w":
+                king_square = (i, j)
+            elif get_piece(board, (i, j)) == "K" and current_player == "b":
+                king_square = (i, j)
+
+    for i in range(8):
+        for j in range(8):
+            if get_piece(board, (i, j)) != "." and is_enemy(
+                get_piece(board, (i, j)), get_piece(board, king_square)
+            ):
+                if IsMoveLegal(board, (i, j), king_square):
+                    return True
+
+    return False
