@@ -161,10 +161,57 @@ def IsMoveLegal(board, from_square, to_square) -> bool:
         return False
 
 
-def GetListOfLegalMoves():
-    """Return a list of legal moves.
+def GetListOfLegalMoves(board, current_player, from_square) -> list[tuple[int, int]]:
+    """Return a list of legal moves for the piece at the given square.
+
+    Args:
+        board (list[list[str]]): A 2-d array representing a chess board.
+        current_player (str): The current player.
+        from_square (tuple[int, int]): A tuple representing a position on the board.
 
     Returns:
-        list[tuple[tuple[int, int], tuple[int, int]]]: A list of legal moves.
+        list[tuple[int, int]]: A list of legal moves for the piece at the given square.
     """
-    pass
+    legal_moves = []
+    for i in range(8):
+        for j in range(8):
+            if IsMoveLegal(board, from_square, (i, j)) and not DoesMovePutPlayerInCheck(
+                board,
+                from_square,
+                (i, j),
+                current_player,
+            ):
+                legal_moves.append((i, j))
+    return legal_moves
+
+
+def DoesMovePutPlayerInCheck(board, from_square, to_square, current_player) -> bool:
+    """Return True if the move puts the player in check.
+
+    Args:
+        from_square (tuple[int, int]): A tuple representing a position on the board.
+        to_square (tuple[int, int]): A tuple representing a position on the board.
+
+    Returns:
+        bool: True if the move puts the player in check.
+    """
+    test_board = board.copy()
+
+    from_piece = get_piece(test_board, from_square)
+
+    test_board[from_square[0]][from_square[1]] = "."
+    test_board[to_square[0]][to_square[1]] = from_piece
+
+    return IsInCheck(test_board, current_player)
+
+
+def IsInCheck(board, current_player) -> bool:
+    """Return True if the player is in check.
+
+    Args:
+        board (list[list[str]]): A 2-d array representing a chess board.
+        current_player (str): The current player.
+
+    Returns:
+        bool: True if the player is in check.
+    """
