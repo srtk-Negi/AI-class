@@ -81,7 +81,8 @@ def MovePiece(board, from_square, to_square) -> list[list[str]]:
         list[list[str]]: A 2-d array representing a chess board.
     """
     piece_to_move = get_piece(board, from_square)
-    new_board = set_piece(set_piece(board, from_square, "."), to_square, piece_to_move)
+    new_board = set_piece(set_piece(board, from_square,
+                          "."), to_square, piece_to_move)
 
     return new_board
 
@@ -150,3 +151,18 @@ def is_same_row(from_square, to_square) -> bool:
         return True
     else:
         return False
+
+
+def get_current_player(piece) -> str:
+    """Returns the current player.
+
+    Args:
+        piece (str): The piece that is being moved.
+
+    Returns:
+        str: 'w' for white, 'b' for black.
+    """
+    if piece.isupper():
+        return "w"
+    else:
+        return "b"

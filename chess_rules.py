@@ -4,10 +4,11 @@ from helper_functions import (
     is_diagonal,
     is_same_column,
     is_same_row,
+    get_current_player
 )
 
 
-def IsClearPath(board, from_square, to_square) -> bool:
+def IsClearPath(board: list[list[str]], from_square: tuple, to_square: tuple) -> bool:
     """Return True if the path between the two pieces is clear.
 
     Args:
@@ -50,7 +51,7 @@ def IsClearPath(board, from_square, to_square) -> bool:
         return IsClearPath(board, new_from_square, to_square)
 
 
-def IsMoveLegal(board, from_square, to_square) -> bool:
+def IsMoveLegal(board: list[list[str]], from_square: tuple, to_square: tuple) -> bool:
     """Return True if the move is legal.
 
     Args:
@@ -161,7 +162,7 @@ def IsMoveLegal(board, from_square, to_square) -> bool:
         return False
 
 
-def GetListOfLegalMoves(board, current_player, from_square) -> list[tuple[int, int]]:
+def GetListOfLegalMoves(board: list[list[str]], current_player: str, from_square: tuple) -> list[tuple[int, int]]:
     """Return a list of legal moves for the piece at the given square.
 
     Args:
@@ -185,7 +186,12 @@ def GetListOfLegalMoves(board, current_player, from_square) -> list[tuple[int, i
     return legal_moves
 
 
-def DoesMovePutPlayerInCheck(board, from_square, to_square, current_player) -> bool:
+def DoesMovePutPlayerInCheck(
+    board: list[list[str]],
+    from_square: tuple,
+    to_square: tuple,
+    current_player: str
+) -> bool:
     """Return True if the move puts the player in check.
 
     Args:
@@ -205,7 +211,7 @@ def DoesMovePutPlayerInCheck(board, from_square, to_square, current_player) -> b
     return IsInCheck(test_board, current_player)
 
 
-def IsInCheck(board, current_player) -> bool:
+def IsInCheck(board: list[list[str]], current_player: str) -> bool:
     """Return True if the player is in check.
 
     Args:
@@ -230,5 +236,42 @@ def IsInCheck(board, current_player) -> bool:
             ):
                 if IsMoveLegal(board, (i, j), king_square):
                     return True
-
     return False
+
+
+def GetPiecesWithLegalMoves(board: list[list[str]], current_player: str) -> list[tuple[int, int]]:
+    """Return a list of pieces that have legal moves.
+
+    Args:
+        board (list[list[str]]): A 2-d array representing a chess board.
+        current_player (str): The current player.
+
+    Returns:
+        list[tuple[int, int]]: A list of pieces that have legal moves.
+    """
+    pieces_with_legal_moves = []
+    for i in range(8):
+        for j in range(8):
+            piece = get_piece(board, (i, j))
+            if piece != "." and not is_enemy(piece, current_player):
+                if GetListOfLegalMoves(board, current_player, (i, j)):
+                    pieces_with_legal_moves.append(piece)
+    return pieces_with_legal_moves
+
+
+def IsCheckMate(board: list[list[str]], current_player: str):
+    """Return True if the player is in checkmate.
+
+    Args:
+        board (list[list[str]]): A 2-d array representing a chess board.
+        current_player (str): The current player.
+
+    Returns:
+        bool: True if the player is in checkmate.
+    """
+    get_pieces_with_legal_moves = GetPiecesWithLegalMoves(
+        board, current_player)
+    if not get_pieces_with_legal_moves:
+        return True
+    else:
+        return False
