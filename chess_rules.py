@@ -4,7 +4,6 @@ from helper_functions import (
     is_diagonal,
     is_same_column,
     is_same_row,
-    DrawBoard
 )
 
 
@@ -50,30 +49,34 @@ from helper_functions import (
 #     else:
 #         return IsClearPath(board, new_from_square, to_square)
 
-def IsClearPath(board, from_square, to_square):
-    # if the from and to squares are only one square apart
+def IsClearPath(board: list[list[str]], from_square: tuple, to_square: tuple) -> bool:
+    """Return True if the path between the two pieces is clear.
+
+    Args:
+        board (list[list[str]]): A 2-d array representing a chess board.
+        from_square (tuple[int, int]): A tuple representing a position on the board.
+        to_square (tuple[int, int]): A tuple representing a position on the board.
+
+    Returns:
+        bool: True if the path between the two squares is clear.
+    """
     if from_square == to_square:
         return True
     else:
-        # Calculate the row and column differences
         row_diff = to_square[0] - from_square[0]
         col_diff = to_square[1] - from_square[1]
 
-        # Determine the direction of the move
         if row_diff == 0:
-            # Horizontal move
             if col_diff > 0:
                 new_from_square = (from_square[0], from_square[1] + 1)
             else:
                 new_from_square = (from_square[0], from_square[1] - 1)
         elif col_diff == 0:
-            # Vertical move
             if row_diff > 0:
                 new_from_square = (from_square[0] + 1, from_square[1])
             else:
                 new_from_square = (from_square[0] - 1, from_square[1])
         elif abs(row_diff) == abs(col_diff):
-            # Diagonal move
             if row_diff > 0 and col_diff > 0:
                 new_from_square = (from_square[0] + 1, from_square[1] + 1)
             elif row_diff > 0 and col_diff < 0:
@@ -83,17 +86,11 @@ def IsClearPath(board, from_square, to_square):
             else:
                 new_from_square = (from_square[0] - 1, from_square[1] - 1)
         else:
-            # Invalid move (not horizontal, vertical, or diagonal)
             return False
 
-        # Check if the new from-square is empty
-        # You should define your own logic to check if the square is empty
-
-        # If new-from-square is not empty, return False
         if get_piece(board, new_from_square) != ".":
             return False
         else:
-            # Recursively check the path from new-from-square to to-square
             return IsClearPath(board, new_from_square, to_square)
 
 
