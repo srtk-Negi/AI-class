@@ -1,13 +1,25 @@
-from helper_functions import ChessBoardSetup, DrawBoard, get_piece
+from helper_functions import ChessBoardSetup, DrawBoard, MovePiece
 from random_ai import GetRandomMove
-from chess_rules import IsMoveLegal, DoesMovePutPlayerInCheck
+import time
+from min_max_ai import get_min_max_move
 
 
 def main():
     board = ChessBoardSetup()
-    DrawBoard(board)
-    from_, to_ = GetRandomMove(board, "w")
-    print(from_, to_)
+
+    while True:
+        DrawBoard(board)
+        time.sleep(3)
+        print()
+        print("White's turn")
+        from_square, to_square = get_min_max_move(board, "w", 2)
+        MovePiece(board, from_square, to_square)
+        DrawBoard(board)
+        time.sleep(3)
+        print()
+        print("Black's turn")
+        from_square, to_square = get_min_max_move(board, "b", 2)
+        MovePiece(board, from_square, to_square)
 
 
 if __name__ == "__main__":

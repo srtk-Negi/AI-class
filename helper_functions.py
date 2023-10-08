@@ -69,22 +69,17 @@ def DrawBoard(board) -> None:
         print()
 
 
-def MovePiece(board, from_square, to_square) -> list[list[str]]:
+def MovePiece(board, from_square, to_square) -> None:
     """Moves a piece from one square to another.
 
     Args:
         board (list[list[str]]): A 2-d array representing a chess board.
         from_square (tuple[int, int]): A tuple representing the square to move from.
         to_square (tuple[int, int]): A tuple representing the square to move to.
-
-    Returns:
-        list[list[str]]: A 2-d array representing a chess board.
     """
     piece_to_move = get_piece(board, from_square)
     new_board = set_piece(set_piece(board, from_square,
                           "."), to_square, piece_to_move)
-
-    return new_board
 
 
 def is_enemy(attacking_piece: str, **kwargs) -> bool:
