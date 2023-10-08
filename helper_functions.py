@@ -87,22 +87,41 @@ def MovePiece(board, from_square, to_square) -> list[list[str]]:
     return new_board
 
 
-def is_enemy(attacking_piece, defending_piece) -> bool:
+def is_enemy(attacking_piece: str, **kwargs) -> bool:
     """Returns True if the defending piece is an enemy of the attacking piece.
 
     Args:
         attacking_piece (str): The piece that is attacking.
-        defending_piece (str): The piece that is being attacked.
+        **kwargs: Optional arguments.
+            defending_piece (str): The piece that is defending.
+            current_player (str): The current player.
 
     Returns:
         bool: True if the defending piece is an enemy of the attacking piece.
     """
-    if attacking_piece.isupper() and defending_piece.islower():
-        return True
-    elif attacking_piece.islower() and defending_piece.isupper():
-        return True
+    defending_piece = kwargs.get("defending_piece") if kwargs.get(
+        "defending_piece") else None
+    current_player = kwargs.get("current_player") if kwargs.get(
+        "current_player") else None
+
+    if defending_piece:
+        if attacking_piece.isupper() and defending_piece.isupper():
+            return False
+        elif attacking_piece.islower() and defending_piece.islower():
+            return False
+        else:
+            return True
+
+    elif current_player:
+        if attacking_piece.isupper() and current_player == "w":
+            return False
+        elif attacking_piece.islower() and current_player == "b":
+            return False
+        else:
+            return True
     else:
-        return False
+        raise Exception(
+            "Either defending_piece or current_player must be passed as a keyword argument.")
 
 
 def is_diagonal(from_square, to_square) -> bool:
@@ -162,7 +181,27 @@ def get_current_player(piece) -> str:
     Returns:
         str: 'w' for white, 'b' for black.
     """
+    if piece == ".":
+        return None
     if piece.isupper():
         return "w"
     else:
         return "b"
+
+
+def get_locations_of_all_pieces(board: list[list[str]], current_player: str) -> list[tuple[int, int]]:
+    """Returns a list of the locations of all pieces belonging to the current player.
+
+    Args:
+        board (list[list[str]]): A 2-d array representing a chess board.
+        current_player (str): 'w' for white, 'b' for black.
+
+    Returns:
+        list[tuple[int, int]]: A list of the locations of all pieces belonging to the current player.
+    """
+    locations = []
+    for i in range(8):
+        for j in range(8):
+            if get_current_player(get_piece(board, (i, j))) == current_player:
+                locations.append((i, j))
+    return locations

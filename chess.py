@@ -1,12 +1,15 @@
-from helper_functions import is_diagonal
+from helper_functions import ChessBoardSetup, DrawBoard
+from random_ai import GetRandomMove
+from chess_rules import IsMoveLegal, DoesMovePutPlayerInCheck
 
 
 def main():
-    print(is_diagonal((1, 2), (2, 1)))
-    print(is_diagonal((1, 2), (3, 0)))
-    print(is_diagonal((1, 2), (4, 1)))
-    print(is_diagonal((1, 2), (1, 1)))
-    print(is_diagonal((4, 7), (6, 5)))
+    board = ChessBoardSetup()
+    DrawBoard(board)
+    # print(IsMoveLegal(board, (6, 0), (4, 2)))
+    # from_, to_ = GetRandomMove(board, "w")
+    # print(from_, to_)
+    GetRandomMove(board, "w")
 
 
 if __name__ == "__main__":

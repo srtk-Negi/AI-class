@@ -4,51 +4,97 @@ from helper_functions import (
     is_diagonal,
     is_same_column,
     is_same_row,
-    get_current_player
+    DrawBoard
 )
 
 
-def IsClearPath(board: list[list[str]], from_square: tuple, to_square: tuple) -> bool:
-    """Return True if the path between the two pieces is clear.
+# def IsClearPath(board: list[list[str]], from_square: tuple, to_square: tuple) -> bool:
+#     """Return True if the path between the two pieces is clear.
 
-    Args:
-        board (list[list[str]]): A 2-d array representing a chess board.
-        from_square (tuple[int, int]): A tuple representing a position on the board.
-        to_square (tuple[int, int]): A tuple representing a position on the board.
+#     Args:
+#         board (list[list[str]]): A 2-d array representing a chess board.
+#         from_square (tuple[int, int]): A tuple representing a position on the board.
+#         to_square (tuple[int, int]): A tuple representing a position on the board.
 
-    Returns:
-        bool: True if the path between the two pieces is clear.
-    """
-    from_x, from_y = from_square
-    to_x, to_y = to_square
+#     Returns:
+#         bool: True if the path between the two squares is clear.
+#     """
+#     from_x, from_y = from_square
+#     to_x, to_y = to_square
 
-    if (from_x == to_x and abs(from_y - to_y) == 1) or (
-        from_y == to_y and abs(from_x - to_x) == 1
-    ):
+#     if (from_x == to_x and abs(from_y - to_y) == 1) or (
+#         from_y == to_y and abs(from_x - to_x) == 1
+#     ):
+#         return True
+
+#     else:
+#         if to_x > from_x:
+#             new_from_square = (from_x + 1, from_y)
+#         elif to_x < from_x:
+#             new_from_square = (from_x - 1, from_y)
+#         elif to_y > from_y:
+#             new_from_square = (from_x, from_y + 1)
+#         elif to_y < from_y:
+#             new_from_square = (from_x, from_y - 1)
+#         elif to_x > from_x and to_y > from_y:
+#             new_from_square = (from_x + 1, from_y + 1)
+#         elif to_x > from_x and to_y < from_y:
+#             new_from_square = (from_x + 1, from_y - 1)
+#         elif to_x < from_x and to_y > from_y:
+#             new_from_square = (from_x - 1, from_y + 1)
+#         elif to_x < from_x and to_y < from_y:
+#             new_from_square = (from_x - 1, from_y - 1)
+
+#     if get_piece(board, new_from_square) != ".":
+#         return False
+#     else:
+#         return IsClearPath(board, new_from_square, to_square)
+
+def IsClearPath(board, from_square, to_square):
+    # if the from and to squares are only one square apart
+    if from_square == to_square:
         return True
-
     else:
-        if to_x > from_x:
-            new_from_square = (from_x + 1, from_y)
-        elif to_x < from_x:
-            new_from_square = (from_x - 1, from_y)
-        elif to_y > from_y:
-            new_from_square = (from_x, from_y + 1)
-        elif to_y < from_y:
-            new_from_square = (from_x, from_y - 1)
-        elif to_x > from_x and to_y > from_y:
-            new_from_square = (from_x + 1, from_y + 1)
-        elif to_x > from_x and to_y < from_y:
-            new_from_square = (from_x + 1, from_y - 1)
-        elif to_x < from_x and to_y > from_y:
-            new_from_square = (from_x - 1, from_y + 1)
-        elif to_x < from_x and to_y < from_y:
-            new_from_square = (from_x - 1, from_y - 1)
+        # Calculate the row and column differences
+        row_diff = to_square[0] - from_square[0]
+        col_diff = to_square[1] - from_square[1]
 
-    if get_piece(board, new_from_square) != ".":
-        return False
-    else:
-        return IsClearPath(board, new_from_square, to_square)
+        # Determine the direction of the move
+        if row_diff == 0:
+            # Horizontal move
+            if col_diff > 0:
+                new_from_square = (from_square[0], from_square[1] + 1)
+            else:
+                new_from_square = (from_square[0], from_square[1] - 1)
+        elif col_diff == 0:
+            # Vertical move
+            if row_diff > 0:
+                new_from_square = (from_square[0] + 1, from_square[1])
+            else:
+                new_from_square = (from_square[0] - 1, from_square[1])
+        elif abs(row_diff) == abs(col_diff):
+            # Diagonal move
+            if row_diff > 0 and col_diff > 0:
+                new_from_square = (from_square[0] + 1, from_square[1] + 1)
+            elif row_diff > 0 and col_diff < 0:
+                new_from_square = (from_square[0] + 1, from_square[1] - 1)
+            elif row_diff < 0 and col_diff > 0:
+                new_from_square = (from_square[0] - 1, from_square[1] + 1)
+            else:
+                new_from_square = (from_square[0] - 1, from_square[1] - 1)
+        else:
+            # Invalid move (not horizontal, vertical, or diagonal)
+            return False
+
+        # Check if the new from-square is empty
+        # You should define your own logic to check if the square is empty
+
+        # If new-from-square is not empty, return False
+        if get_piece(board, new_from_square) != ".":
+            return False
+        else:
+            # Recursively check the path from new-from-square to to-square
+            return IsClearPath(board, new_from_square, to_square)
 
 
 def IsMoveLegal(board: list[list[str]], from_square: tuple, to_square: tuple) -> bool:
@@ -87,11 +133,13 @@ def IsMoveLegal(board: list[list[str]], from_square: tuple, to_square: tuple) ->
             and to_piece == "."
             and from_square[0] == 1
             and to_square[0] == 3
+            and to_square[1] == from_square[1]
         ) or (
             from_piece == "P"
             and to_piece == "."
             and from_square[0] == 6
             and to_square[0] == 4
+            and to_square[1] == from_square[1]
         ):
             if IsClearPath(board, from_square, to_square):
                 return True
@@ -100,13 +148,13 @@ def IsMoveLegal(board: list[list[str]], from_square: tuple, to_square: tuple) ->
             and to_piece != "."
             and to_square[0] - from_square[0] == 1
             and abs(to_square[1] - from_square[1]) == 1
-            and is_enemy(from_piece, to_piece)
+            and is_enemy(from_piece, defending_piece=to_piece)
         ) or (
             from_piece == "P"
             and to_piece != "."
             and to_square[0] - from_square[0] == -1
             and abs(to_square[1] - from_square[1]) == 1
-            and is_enemy(from_piece, to_piece)
+            and is_enemy(from_piece, defending_piece=to_piece)
         ):
             return True
 
@@ -114,13 +162,13 @@ def IsMoveLegal(board: list[list[str]], from_square: tuple, to_square: tuple) ->
         if is_same_row(from_square, to_square) or is_same_column(
             from_square, to_square
         ):
-            if is_enemy(from_piece, to_piece) or to_piece == ".":
+            if is_enemy(from_piece, defending_piece=to_piece) or to_piece == ".":
                 if IsClearPath(board, from_square, to_square):
                     return True
 
     elif from_piece == "b" or from_piece == "B":
         if is_diagonal(from_square, to_square):
-            if is_enemy(from_piece, to_piece) or to_piece == ".":
+            if is_enemy(from_piece, defending_piece=to_piece) or to_piece == ".":
                 if IsClearPath(board, from_square, to_square):
                     return True
 
@@ -128,12 +176,12 @@ def IsMoveLegal(board: list[list[str]], from_square: tuple, to_square: tuple) ->
         if is_same_row(from_square, to_square) or is_same_column(
             from_square, to_square
         ):
-            if is_enemy(from_piece, to_piece) or to_piece == ".":
+            if is_enemy(from_piece, defending_piece=to_piece) or to_piece == ".":
                 if IsClearPath(board, from_square, to_square):
                     return True
 
         if is_diagonal(from_square, to_square):
-            if is_enemy(from_piece, to_piece) or to_piece == ".":
+            if is_enemy(from_piece, defending_piece=to_piece) or to_piece == ".":
                 if IsClearPath(board, from_square, to_square):
                     return True
 
@@ -141,7 +189,7 @@ def IsMoveLegal(board: list[list[str]], from_square: tuple, to_square: tuple) ->
         col_diff = to_square[1] - from_square[1]
         row_diff = to_square[0] - from_square[0]
 
-        if to_square == "." or is_enemy(from_piece, to_piece):
+        if to_square == "." or is_enemy(from_piece, defending_piece=to_piece):
             if abs(col_diff) == 2 and abs(row_diff) == 1:
                 return True
             elif abs(col_diff) == 1 and abs(row_diff) == 2:
@@ -151,15 +199,15 @@ def IsMoveLegal(board: list[list[str]], from_square: tuple, to_square: tuple) ->
         col_diff = to_square[1] - from_square[1]
         row_diff = to_square[0] - from_square[0]
 
-        if to_square == "." or is_enemy(from_piece, to_piece):
+        if to_square == "." or is_enemy(from_piece, defending_piece=to_piece):
             if abs(col_diff) == 1 and abs(row_diff) == 1:
                 return True
             elif abs(col_diff) == 1 and abs(row_diff) == 0:
                 return True
             elif abs(col_diff) == 0 and abs(row_diff) == 1:
                 return True
-    else:
-        return False
+
+    return False
 
 
 def GetListOfLegalMoves(board: list[list[str]], current_player: str, from_square: tuple) -> list[tuple[int, int]]:
@@ -201,14 +249,17 @@ def DoesMovePutPlayerInCheck(
     Returns:
         bool: True if the move puts the player in check.
     """
-    test_board = board.copy()
+    from_piece = get_piece(board, from_square)
 
-    from_piece = get_piece(test_board, from_square)
+    board[from_square[0]][from_square[1]] = "."
+    board[to_square[0]][to_square[1]] = from_piece
 
-    test_board[from_square[0]][from_square[1]] = "."
-    test_board[to_square[0]][to_square[1]] = from_piece
+    is_in_check = IsInCheck(board, current_player)
 
-    return IsInCheck(test_board, current_player)
+    board[from_square[0]][from_square[1]] = from_piece
+    board[to_square[0]][to_square[1]] = "."
+
+    return is_in_check
 
 
 def IsInCheck(board: list[list[str]], current_player: str) -> bool:
@@ -232,14 +283,14 @@ def IsInCheck(board: list[list[str]], current_player: str) -> bool:
     for i in range(8):
         for j in range(8):
             if get_piece(board, (i, j)) != "." and is_enemy(
-                get_piece(board, (i, j)), get_piece(board, king_square)
+                get_piece(board, (i, j)), defending_piece=get_piece(board, king_square)
             ):
                 if IsMoveLegal(board, (i, j), king_square):
                     return True
     return False
 
 
-def GetPiecesWithLegalMoves(board: list[list[str]], current_player: str) -> list[tuple[int, int]]:
+def GetPiecesWithLegalMoves(board: list[list[str]], current_player: str) -> list[str]:
     """Return a list of pieces that have legal moves.
 
     Args:
@@ -247,15 +298,15 @@ def GetPiecesWithLegalMoves(board: list[list[str]], current_player: str) -> list
         current_player (str): The current player.
 
     Returns:
-        list[tuple[int, int]]: A list of pieces that have legal moves.
+        list[str]: A list of pieces that have legal moves.
     """
     pieces_with_legal_moves = []
     for i in range(8):
         for j in range(8):
             piece = get_piece(board, (i, j))
-            if piece != "." and not is_enemy(piece, current_player):
+            if piece != "." and not is_enemy(piece, current_player=current_player):
                 if GetListOfLegalMoves(board, current_player, (i, j)):
-                    pieces_with_legal_moves.append(piece)
+                    pieces_with_legal_moves.append((i, j))
     return pieces_with_legal_moves
 
 
