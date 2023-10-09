@@ -7,13 +7,16 @@ from minimax_ai import evl, GetMinMaxMove
 def main():
     board = ChessBoardSetup()
     DrawBoard(board)
-    print(f"Board Value - {evl(board)}")
-    from_, to_ = GetRandomMove(board, "w")
-    MovePiece(board, from_, to_)
-    print(f"Board Value - {evl(board)}")
-    from_, to_ = GetRandomMove(board, "b")
-    MovePiece(board, from_, to_)
-    print(f"Board Value - {evl(board)}")
+    print()
+    MovePiece(board, (6, 0), (4, 0))
+    DrawBoard(board)
+    print()
+    MovePiece(board, (1, 1), (3, 1))
+    DrawBoard(board)
+    print()
+    MovePiece(board, (4, 0), (3, 1))
+    DrawBoard(board)
+    print(f"Value of board: {evl(board)}")
 
 
 if __name__ == "__main__":

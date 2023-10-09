@@ -1,5 +1,5 @@
 """ Min-Max AI for Chess."""
-from chess_rules import GetPiecesWithLegalMoves
+from chess_rules import GetPiecesWithLegalMoves, GetListOfLegalMoves
 from helper_functions import MovePiece, get_piece
 
 
@@ -27,5 +27,33 @@ def evl(board):
     return white_value - black_value
 
 
-def GetMinMaxMove():
-    pass
+def GetMinMaxMove(board: list[list[str]], current_player: str) -> tuple[tuple[int, int], tuple[int, int]]:
+    """Returns the best move for the current player.
+
+    Args:
+        board (list[list[str]]): A 2-d array representing a chess board.
+        current_player (str): 'w' for white, 'b' for black.
+
+    Returns:
+        tuple[tuple[int, int], tuple[int, int]]: A tuple representing the best move for the current player.
+    """
+    best_move = 0
+    best_enemy_move = 0
+
+    enemy_player = "b" if current_player == "w" else "w"
+
+    pieces = GetPiecesWithLegalMoves(board, current_player)
+
+    for piece in pieces:
+        legal_moves = GetListOfLegalMoves(board, current_player, piece)
+        for move in legal_moves:
+            MovePiece(board, piece, move)
+            enemy_pieces = GetPiecesWithLegalMoves(board, enemy_player)
+            for enemy_piece in enemy_pieces:
+                enemy_legal_moves = GetListOfLegalMoves(
+                    board, enemy_player, enemy_piece)
+                for enemy_move in enemy_legal_moves:
+                    MovePiece(board, enemy_piece, enemy_move)
+                    res = evl(board)
+                    best_enemy_move = min(res, best_enemy_move)
+            MovePiece(board, move, piece)
