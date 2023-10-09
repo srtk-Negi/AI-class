@@ -40,6 +40,9 @@ def GetMinMaxMove(board: list[list[str]], current_player: str) -> tuple[tuple[in
     best_move = 0
     best_enemy_move = 0
 
+    best_score = 0
+    best_enemy_score = 0
+
     enemy_player = "b" if current_player == "w" else "w"
 
     pieces = GetPiecesWithLegalMoves(board, current_player)
@@ -55,5 +58,7 @@ def GetMinMaxMove(board: list[list[str]], current_player: str) -> tuple[tuple[in
                 for enemy_move in enemy_legal_moves:
                     MovePiece(board, enemy_piece, enemy_move)
                     res = evl(board)
-                    best_enemy_move = min(res, best_enemy_move)
+                    best_enemy_move = enemy_move if res < best_enemy_score else best_enemy_move
+                    MovePiece(board, enemy_move, enemy_piece)
+
             MovePiece(board, move, piece)
