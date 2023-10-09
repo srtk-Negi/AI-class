@@ -7,48 +7,6 @@ from helper_functions import (
 )
 
 
-# def IsClearPath(board: list[list[str]], from_square: tuple, to_square: tuple) -> bool:
-#     """Return True if the path between the two pieces is clear.
-
-#     Args:
-#         board (list[list[str]]): A 2-d array representing a chess board.
-#         from_square (tuple[int, int]): A tuple representing a position on the board.
-#         to_square (tuple[int, int]): A tuple representing a position on the board.
-
-#     Returns:
-#         bool: True if the path between the two squares is clear.
-#     """
-#     from_x, from_y = from_square
-#     to_x, to_y = to_square
-
-#     if (from_x == to_x and abs(from_y - to_y) == 1) or (
-#         from_y == to_y and abs(from_x - to_x) == 1
-#     ):
-#         return True
-
-#     else:
-#         if to_x > from_x:
-#             new_from_square = (from_x + 1, from_y)
-#         elif to_x < from_x:
-#             new_from_square = (from_x - 1, from_y)
-#         elif to_y > from_y:
-#             new_from_square = (from_x, from_y + 1)
-#         elif to_y < from_y:
-#             new_from_square = (from_x, from_y - 1)
-#         elif to_x > from_x and to_y > from_y:
-#             new_from_square = (from_x + 1, from_y + 1)
-#         elif to_x > from_x and to_y < from_y:
-#             new_from_square = (from_x + 1, from_y - 1)
-#         elif to_x < from_x and to_y > from_y:
-#             new_from_square = (from_x - 1, from_y + 1)
-#         elif to_x < from_x and to_y < from_y:
-#             new_from_square = (from_x - 1, from_y - 1)
-
-#     if get_piece(board, new_from_square) != ".":
-#         return False
-#     else:
-#         return IsClearPath(board, new_from_square, to_square)
-
 def IsClearPath(board: list[list[str]], from_square: tuple, to_square: tuple) -> bool:
     """Return True if the path between the two pieces is clear.
 
@@ -207,7 +165,9 @@ def IsMoveLegal(board: list[list[str]], from_square: tuple, to_square: tuple) ->
     return False
 
 
-def GetListOfLegalMoves(board: list[list[str]], current_player: str, from_square: tuple) -> list[tuple[int, int]]:
+def GetListOfLegalMoves(
+    board: list[list[str]], current_player: str, from_square: tuple
+) -> list[tuple[int, int]]:
     """Return a list of legal moves for the piece at the given square.
 
     Args:
@@ -232,10 +192,7 @@ def GetListOfLegalMoves(board: list[list[str]], current_player: str, from_square
 
 
 def DoesMovePutPlayerInCheck(
-    board: list[list[str]],
-    from_square: tuple,
-    to_square: tuple,
-    current_player: str
+    board: list[list[str]], from_square: tuple, to_square: tuple, current_player: str
 ) -> bool:
     """Return True if the move puts the player in check.
 
@@ -272,9 +229,9 @@ def IsInCheck(board: list[list[str]], current_player: str) -> bool:
     king_square = None
     for i in range(8):
         for j in range(8):
-            if get_piece(board, (i, j)) == "k" and current_player == "w":
+            if get_piece(board, (i, j)) == "k" and current_player == "b":
                 king_square = (i, j)
-            elif get_piece(board, (i, j)) == "K" and current_player == "b":
+            elif get_piece(board, (i, j)) == "K" and current_player == "w":
                 king_square = (i, j)
 
     for i in range(8):
@@ -284,6 +241,14 @@ def IsInCheck(board: list[list[str]], current_player: str) -> bool:
             ):
                 if IsMoveLegal(board, (i, j), king_square):
                     return True
+    # for i in range(8):
+    #     for j in range(8):
+    #         if board[i][j] != ".":
+    #             if (current_player == "white" and board[i][j].islower()) or (
+    #                 current_player == "black" and board[i][j].isupper()
+    #             ):
+    #                 if IsMoveLegal(board, (i, j), king_square):
+    #                     return True
     return False
 
 
@@ -317,9 +282,7 @@ def IsCheckMate(board: list[list[str]], current_player: str):
     Returns:
         bool: True if the player is in checkmate.
     """
-    get_pieces_with_legal_moves = GetPiecesWithLegalMoves(
-        board, current_player)
-    if not get_pieces_with_legal_moves:
+    if not GetPiecesWithLegalMoves(board, current_player):
         return True
     else:
         return False
