@@ -9,7 +9,8 @@ def GetRandomMove(
     pieces_with_legal_moves = GetPiecesWithLegalMoves(board, current_player)
     random_from_square = random.choice(pieces_with_legal_moves)
 
-    legal_moves = GetListOfLegalMoves(board, current_player, random_from_square)
+    legal_moves = GetListOfLegalMoves(
+        board, current_player, random_from_square)
     random_to_square = random.choice(legal_moves)
 
     return random_from_square, random_to_square
